@@ -89,6 +89,7 @@
             // 
             // button3
             // 
+            this.button3.BackColor = System.Drawing.Color.Red;
             this.button3.Location = new System.Drawing.Point(1016, 202);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(156, 67);
@@ -111,7 +112,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
+            this.BackColor = System.Drawing.Color.Blue;
             this.ClientSize = new System.Drawing.Size(1184, 701);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button3);
@@ -120,6 +121,7 @@
             this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
