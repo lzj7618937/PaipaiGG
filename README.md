@@ -12,3 +12,7 @@ Bin 目录用来存放编译的结果，bin是二进制binrary的英文缩写，
 　　*.sln：(Visual Studio.Solution) 通过为环境提供对项目、项目项和解决方案项在磁盘上位置的引用,可将它们组织到解决方案中。
 　　比如是生成Debug模式,还是Release模式,是通用CPU还是专用的等
 编译和运行直接按F5，至于调试按F9插入断电，F10整行执行，F5，F9，F10配合使用
+
+http://blog.csdn.net/lsgy2008/article/details/8216484
+*1、把大漠插件 dm.dll 转成.net程序集。方法：在Visual Studio 命令提示 中输入 Tlbimp D:\dm.dll /out: D:\dmNet.dll 即可。
+*2、注册dm.dll。把源dm.dll注册一下。
