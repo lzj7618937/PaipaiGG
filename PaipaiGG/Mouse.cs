@@ -35,6 +35,7 @@ namespace PaipaiGG
         {
             SetCursorPos(dx, dy);//用屏幕取点工具可以得到坐标
             mouse_event(MouseEventFlag.LeftDown| MouseEventFlag.LeftUp | MouseEventFlag.Absolute, 0, 0, 0, UIntPtr.Zero);
+            mouse_event(MouseEventFlag.LeftDown | MouseEventFlag.LeftUp | MouseEventFlag.Absolute, 0, 0, 0, UIntPtr.Zero);
             //mouse_event(MouseEventFlag.RightUp | MouseEventFlag.Absolute, 607, 385, 0, UIntPtr.Zero);
             //System.Windows.Forms.Cursor.Position = new System.Drawing.Point(0, 0);
             //mouse_event(MouseEventFlag.Absolute|MouseEventFlag.Move|MouseEventFlag.RightDown | MouseEventFlag.RightUp, 100 * 65536 / 1366, 100 * 65536 / 768, 0, UIntPtr.Zero);
