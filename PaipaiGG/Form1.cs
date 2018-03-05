@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using WindowsAPI;
 
 namespace PaipaiGG
 {
@@ -116,19 +117,20 @@ namespace PaipaiGG
             bitmap.Dispose();//关闭对象
             graphics.Dispose();//关闭画笔
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Trace.TraceError("出现异常:" + e.Message);//记录日志
+                TraceHelper.GetInstance().Error(ex, "Copy Scan");
+                /*
+                Trace.TraceError("出现异常:" + ex.Message);//记录日志
+                Trace.TraceError("异常信息：" + ex.Message);
+                Trace.TraceError("异常对象：" + ex.Source);
+                Trace.TraceError("调用堆栈：\n" + ex.StackTrace.Trim());
+                Trace.TraceError("触发方法：" + ex.TargetSite);*/
             }
         }
 
         private void ocrCode()
         {
-            Trace.TraceError("这是一个Error级别的日志");
-            Trace.TraceWarning("这是一个Warning级别的日志");
-            Trace.TraceInformation("这是一个Info级别的日志");
-            Trace.WriteLine("这是一个普通日志");
-            Trace.Flush();//立即输出
             this.timer2.Interval = 1000;
             this.timer2.Tick += new EventHandler(Price_Tick);
             this.timer2.Start();
@@ -151,6 +153,15 @@ namespace PaipaiGG
             this.dm = new dmsoft();
             this.dm.SetPath("C:\\dm");
             this.dm.SetDict(0, "系统字库数字.txt");
+
+
+            //把异常信息输出到文件
+            //Trace.TraceError("这是一个Error级别的日志");
+            //Trace.TraceWarning("这是一个Warning级别的日志");
+            //Trace.TraceInformation("这是一个Info级别的日志");
+            //Trace.WriteLine("这是一个普通日志");
+            //Trace.Flush();//立即输出
+            TraceHelper.GetInstance().Error("This is an error message", "Main Function");
         }
 
         private void Timer_Tick(object sender, EventArgs e)
