@@ -16,6 +16,7 @@ namespace PaipaiGG
         Bitmap bitmap;
         Graphics graphics;  //创建画笔
         private int priceLeft, priceTop, priceRight, priceBottom;
+        private int first_priceLeft,first_priceTop,first_priceRight,first_priceBottom,modify_priceLeft,modify_priceTop,modify_priceRight,modify_priceBottom;
 
         public Form1()
         {
@@ -75,8 +76,8 @@ namespace PaipaiGG
             Thread.Sleep(200);
             SendKeys.Send("100");
 
-            int x2 = 780 + this.Left;
-            int y2 = 370 + this.Top;
+            int x2 = 780 + webBrowerP.X;
+            int y2 = 370 + webBrowerP.Y;
             //MessageBox.Show("x2y2:" + x2 + "," + y2);
             Mouse.MouseLefDownEvent(x2, y2, 0);
             Thread.Sleep(200);
@@ -84,8 +85,8 @@ namespace PaipaiGG
 
             Thread.Sleep(200);
             ocrCode();
-            int x3 = 850 + this.Left;
-            int y3 = 370 + this.Top;
+            int x3 = 850 + webBrowerP.X;
+            int y3 = 370 + webBrowerP.Y;
             //MessageBox.Show("x3y3:" + x3 + "," + y3);
             Mouse.MouseLefDownEvent(x3, y3, 0);
 
@@ -96,13 +97,6 @@ namespace PaipaiGG
         //修改出价
         private void button3_Click(object sender, EventArgs e)
         {
-            priceLeft = 204 + webBrowerP.X;
-            priceTop = 374 + webBrowerP.Y;
-            priceRight = 242 + webBrowerP.X;
-            priceBottom = 387 + webBrowerP.Y;
-
-            Thread.Sleep(2000);
-
             int x1 = 690 + webBrowerP.X;
             int y1 = 380 + webBrowerP.Y;
 
@@ -169,8 +163,17 @@ namespace PaipaiGG
         //最低成效价显示
         private void Price_Tick(object sender, EventArgs e)
         {
-            //int verifyCodeLeft = 204 + webBrowerP.X, verifyCodeTop = 390 + webBrowerP.Y, verifyCodeRight = 242 + webBrowerP.X, verifyCodeBottom = 403 + webBrowerP.Y;
-            String price = dm.Ocr(priceLeft, priceTop, priceRight, priceBottom, "b@ffffff-0d0d0d", 1.0);
+            int verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom;
+            verifyCodeLeft = 155 + webBrowerP.X;
+            verifyCodeTop = 338 + webBrowerP.Y;
+            verifyCodeRight = 184 + webBrowerP.X;
+            verifyCodeBottom = 356 + webBrowerP.Y;
+            String word = dm.Ocr(verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom, "b@ffffff-0d0d0d", 1.0);
+            String price = "";
+            if (word.Equals("修改"))
+                price = dm.Ocr(modify_priceLeft, modify_priceTop, modify_priceRight, modify_priceBottom, "b@ffffff-0d0d0d", 1.0);
+            else
+                price = dm.Ocr(first_priceLeft, first_priceTop, first_priceRight, first_priceBottom, "b@ffffff-0d0d0d", 1.0);
             textBox1.Text = price;
         }
 
@@ -185,14 +188,21 @@ namespace PaipaiGG
             this.dm.SetPath("C:\\dm");
             this.dm.SetDict(0, "系统字库数字.txt");
 
-
+            first_priceLeft = 204 + webBrowerP.X;
+            first_priceTop = 390 + webBrowerP.Y;
+            first_priceRight = 242 + webBrowerP.X;
+            first_priceBottom = 403 + webBrowerP.Y;
+            modify_priceLeft = 204 + webBrowerP.X;
+            modify_priceTop = 374 + webBrowerP.Y;
+            modify_priceRight = 242 + webBrowerP.X;
+            modify_priceBottom = 387 + webBrowerP.Y;
             //把异常信息输出到文件
             //Trace.TraceError("这是一个Error级别的日志");
             //Trace.TraceWarning("这是一个Warning级别的日志");
             //Trace.TraceInformation("这是一个Info级别的日志");
             //Trace.WriteLine("这是一个普通日志");
             //Trace.Flush();//立即输出
-            TraceHelper.GetInstance().Error("This is an error message", "Main Function");
+            //TraceHelper.GetInstance().Error("This is an error message", "Main Function");
         }
         
         //本地时间显示
