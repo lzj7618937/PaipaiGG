@@ -42,6 +42,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -146,10 +147,21 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(1016, 434);
+            this.textBox1.Location = new System.Drawing.Point(1097, 434);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(156, 21);
+            this.textBox1.Size = new System.Drawing.Size(75, 21);
             this.textBox1.TabIndex = 10;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("宋体", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.ForeColor = System.Drawing.Color.GreenYellow;
+            this.label3.Location = new System.Drawing.Point(1006, 436);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(85, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "首次最低价：";
             // 
             // Form1
             // 
@@ -157,6 +169,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Blue;
             this.ClientSize = new System.Drawing.Size(1184, 701);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.pictureBox1);
@@ -170,11 +183,10 @@
             this.Controls.Add(this.button1);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            //this.MaximizeBox = false;
-            //this.MinimizeBox = false;
             this.Name = "Form1";
             this.Text = "GG拍牌神器";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.LocationChanged += new System.EventHandler(this.Form1_LocationChanged);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -196,6 +208,7 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Timer timer2;
+        private System.Windows.Forms.Label label3;
     }
 }
 

@@ -56,10 +56,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-=======
+
     <Compile Include="HttpClientHelp.cs" />
->>>>>>> 6b26b15058986cb733f46a498759392a24cef22b
     <Compile Include="Register.cs">
       <SubType>Form</SubType>
     </Compile>

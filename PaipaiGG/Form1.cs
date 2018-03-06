@@ -63,30 +63,22 @@ namespace PaipaiGG
         //首次出价
         private void button2_Click(object sender, EventArgs e)
         {
-            priceLeft = 204 + webBrowerP.X;
-            priceTop = 390 + webBrowerP.Y;
-            priceRight = 242 + webBrowerP.X;
-            priceBottom = 403 + webBrowerP.Y;
-
-            int x1 = 780 + this.Left;
-            int y1 = 315 + this.Top;
-            //MessageBox.Show("top,left:" + this.Left + "," + this.Top);
-            //MessageBox.Show("x1y1:" + x1 + "," + y1);
+            int x1 = 684 + webBrowerP.X;
+            int y1 = 280 + webBrowerP.Y;
             Mouse.MouseLefDownEvent(x1, y1, 0);
             Thread.Sleep(200);
             SendKeys.Send("100");
 
-            int x2 = 780 + webBrowerP.X;
-            int y2 = 370 + webBrowerP.Y;
+            int x2 = 688 + webBrowerP.X;
+            int y2 = 340 + webBrowerP.Y;
             //MessageBox.Show("x2y2:" + x2 + "," + y2);
             Mouse.MouseLefDownEvent(x2, y2, 0);
             Thread.Sleep(200);
             SendKeys.Send("100");
 
             Thread.Sleep(200);
-            ocrCode();
-            int x3 = 850 + webBrowerP.X;
-            int y3 = 370 + webBrowerP.Y;
+            int x3 = 844 + webBrowerP.X;
+            int y3 = 340 + webBrowerP.Y;
             //MessageBox.Show("x3y3:" + x3 + "," + y3);
             Mouse.MouseLefDownEvent(x3, y3, 0);
 
@@ -126,7 +118,6 @@ namespace PaipaiGG
                 //设置图像的大小
                 this.bitmap = new Bitmap(width, height);
                 this.graphics = Graphics.FromImage(bitmap);  //创建画笔
-                //Thread.Sleep(7000);
                 //从指定的区域中复制图形
                 graphics.CopyFromScreen(verifyCodeLeft, verifyCodeTop, 0, 0, bitmap.Size);//截屏
                 //把图形放在PictureBox中显示
@@ -136,6 +127,11 @@ namespace PaipaiGG
                 string fileName = time + ".bmp"; //创建文件名
                 Trace.TraceInformation(message: "首次出价验证码文件名保存为：" + fileName);
                 //MessageBox.Show(fileName);
+                String verifyCode = "";
+                VerifyCodeInput verifyCodeInput = new VerifyCodeInput(bitmap);
+                if (DialogResult.OK == verifyCodeInput.ShowDialog())
+                    verifyCode = verifyCodeInput.verifyCode;
+                MessageBox.Show(verifyCode);
                 bitmap.Save("c:\\dm\\" + fileName); //保存为文件  ,注意格式是否正确.
                 //不能使用Dispose，不然图片就没有了，同时也会引起异常
                 bitmap.Dispose();//关闭对象
@@ -171,10 +167,16 @@ namespace PaipaiGG
             String word = dm.Ocr(verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom, "b@ffffff-0d0d0d", 1.0);
             String price = "";
             if (word.Equals("修改"))
+            {
+                label3.Text = "修改最低价：";
                 price = dm.Ocr(modify_priceLeft, modify_priceTop, modify_priceRight, modify_priceBottom, "b@ffffff-0d0d0d", 1.0);
+            }
             else
+            {
+                label3.Text = "首次最低价：";
                 price = dm.Ocr(first_priceLeft, first_priceTop, first_priceRight, first_priceBottom, "b@ffffff-0d0d0d", 1.0);
-            textBox1.Text = price;
+            }
+                textBox1.Text = price;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -183,11 +185,16 @@ namespace PaipaiGG
             this.timer1.Tick += new EventHandler(Timer_Tick);
             this.timer1.Start();
             this.webBrowser1.Url = new Uri("http://test.alltobid.com/moni/gerenlogin.html");
-            this.webBrowerP = webBrowser1.PointToScreen(this.webBrowser1.Location);
             this.dm = new dmsoft();
             this.dm.SetPath("C:\\dm");
             this.dm.SetDict(0, "系统字库数字.txt");
+            location();
+            ocrCode();
+        }
 
+        private void location()
+        {
+            this.webBrowerP = webBrowser1.PointToScreen(this.webBrowser1.Location);
             first_priceLeft = 204 + webBrowerP.X;
             first_priceTop = 390 + webBrowerP.Y;
             first_priceRight = 242 + webBrowerP.X;
@@ -204,7 +211,12 @@ namespace PaipaiGG
             //Trace.Flush();//立即输出
             //TraceHelper.GetInstance().Error("This is an error message", "Main Function");
         }
-        
+
+        private void Form1_LocationChanged(object sender, EventArgs e)
+        {
+            location();
+        }
+
         //本地时间显示
         private void Timer_Tick(object sender, EventArgs e)
         {
