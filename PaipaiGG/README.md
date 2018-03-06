@@ -22,3 +22,10 @@ http://blog.csdn.net/lsgy2008/article/details/8216484
 
 # 如何打包参考
 https://www.cnblogs.com/overstep/p/6942423.html
+
+# 使用nuget管理包
+https://docs.microsoft.com/zh-cn/nuget/quickstart/install-and-use-a-package-in-visual-studio
+
+# 注册码实现
+http://www.jb51.net/article/70890.htm
+http://blog.csdn.net/qq870841070/article/details/76714070
