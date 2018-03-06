@@ -102,6 +102,7 @@
             this.button3.TabIndex = 5;
             this.button3.Text = "一键修改出价";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // label2
             // 
@@ -169,8 +170,8 @@
             this.Controls.Add(this.button1);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            //this.MaximizeBox = false;
+            //this.MinimizeBox = false;
             this.Name = "Form1";
             this.Text = "GG拍牌神器";
             this.Load += new System.EventHandler(this.Form1_Load);

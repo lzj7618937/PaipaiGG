@@ -15,6 +15,8 @@ namespace PaipaiGG
         private dmsoft dm;
         Bitmap bitmap;
         Graphics graphics;  //创建画笔
+        private int priceLeft, priceTop, priceRight, priceBottom;
+        private int first_priceLeft,first_priceTop,first_priceRight,first_priceBottom,modify_priceLeft,modify_priceTop,modify_priceRight,modify_priceBottom;
 
         public Form1()
         {
@@ -61,6 +63,11 @@ namespace PaipaiGG
         //首次出价
         private void button2_Click(object sender, EventArgs e)
         {
+            priceLeft = 204 + webBrowerP.X;
+            priceTop = 390 + webBrowerP.Y;
+            priceRight = 242 + webBrowerP.X;
+            priceBottom = 403 + webBrowerP.Y;
+
             int x1 = 780 + this.Left;
             int y1 = 315 + this.Top;
             //MessageBox.Show("top,left:" + this.Left + "," + this.Top);
@@ -69,8 +76,8 @@ namespace PaipaiGG
             Thread.Sleep(200);
             SendKeys.Send("100");
 
-            int x2 = 780 + this.Left;
-            int y2 = 370 + this.Top;
+            int x2 = 780 + webBrowerP.X;
+            int y2 = 370 + webBrowerP.Y;
             //MessageBox.Show("x2y2:" + x2 + "," + y2);
             Mouse.MouseLefDownEvent(x2, y2, 0);
             Thread.Sleep(200);
@@ -78,48 +85,65 @@ namespace PaipaiGG
 
             Thread.Sleep(200);
             ocrCode();
-            int x3 = 850 + this.Left;
-            int y3 = 370 + this.Top;
+            int x3 = 850 + webBrowerP.X;
+            int y3 = 370 + webBrowerP.Y;
             //MessageBox.Show("x3y3:" + x3 + "," + y3);
             Mouse.MouseLefDownEvent(x3, y3, 0);
 
             Thread th2 = new Thread(copyScan);
             th2.Start();
         }
+        
+        //修改出价
+        private void button3_Click(object sender, EventArgs e)
+        {
+            int x1 = 690 + webBrowerP.X;
+            int y1 = 380 + webBrowerP.Y;
 
+            String price = textBox1.Text;
+
+            int minPrice = Convert.ToInt32(price);
+            price = (minPrice + 100) + "";
+
+            Mouse.MouseLefDownEvent(x1, y1, 0);
+            SendKeys.Send(price);
+        }
+
+        //拷贝验证码
         private void copyScan()
         {
             try { 
-            Thread.Sleep(2000);
-            int verifyCodeLeft = 542 + webBrowerP.X, verifyCodeTop = 378 + webBrowerP.Y;
-            if (!Directory.Exists(" c:\\dm"))  //判断目录是否存在,不存在就创建
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(" c:\\dm");
-                directoryInfo.Create();
-            }
-            //创建图片对象
-            int width = 111;
-            int height = 40;
-            //设置图像的大小
-            this.bitmap = new Bitmap(width, height);
-            this.graphics = Graphics.FromImage(bitmap);  //创建画笔
-            //Thread.Sleep(7000);
-            //从指定的区域中复制图形
-            graphics.CopyFromScreen(verifyCodeLeft, verifyCodeTop, 0, 0, bitmap.Size);//截屏
-            //把图形放在PictureBox中显示
-            pictureBox1.Image = bitmap;
-            string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff");//获得系统时间
-            time = System.Text.RegularExpressions.Regex.Replace(time, @"[^0-9]+", "");//提取数字
-            string fileName = time + ".bmp"; //创建文件名
-            MessageBox.Show(fileName);
-            bitmap.Save("c:\\dm\\" + fileName); //保存为文件  ,注意格式是否正确.
-            //不能使用Dispose，不然图片就没有了，同时也会引起异常
-            bitmap.Dispose();//关闭对象
-            graphics.Dispose();//关闭画笔
+                Thread.Sleep(2000);
+                int verifyCodeLeft = 542 + webBrowerP.X, verifyCodeTop = 378 + webBrowerP.Y;
+                if (!Directory.Exists(" c:\\dm"))  //判断目录是否存在,不存在就创建
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(" c:\\dm");
+                    directoryInfo.Create();
+                }
+                //创建图片对象
+                int width = 111;
+                int height = 40;
+                //设置图像的大小
+                this.bitmap = new Bitmap(width, height);
+                this.graphics = Graphics.FromImage(bitmap);  //创建画笔
+                //Thread.Sleep(7000);
+                //从指定的区域中复制图形
+                graphics.CopyFromScreen(verifyCodeLeft, verifyCodeTop, 0, 0, bitmap.Size);//截屏
+                //把图形放在PictureBox中显示
+                pictureBox1.Image = bitmap;
+                string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff");//获得系统时间
+                time = System.Text.RegularExpressions.Regex.Replace(time, @"[^0-9]+", "");//提取数字
+                string fileName = time + ".bmp"; //创建文件名
+                Trace.TraceInformation(message: "首次出价验证码文件名保存为：" + fileName);
+                //MessageBox.Show(fileName);
+                bitmap.Save("c:\\dm\\" + fileName); //保存为文件  ,注意格式是否正确.
+                //不能使用Dispose，不然图片就没有了，同时也会引起异常
+                bitmap.Dispose();//关闭对象
+                graphics.Dispose();//关闭画笔
             }
             catch (Exception ex)
             {
-                TraceHelper.GetInstance().Error(ex, "Copy Scan");
+                TraceHelper.GetInstance().Error(ex, "验证码截取出错");
                 /*
                 Trace.TraceError("出现异常:" + ex.Message);//记录日志
                 Trace.TraceError("异常信息：" + ex.Message);
@@ -136,10 +160,20 @@ namespace PaipaiGG
             this.timer2.Start();
         }
 
+        //最低成效价显示
         private void Price_Tick(object sender, EventArgs e)
         {
-            int verifyCodeLeft = 204 + webBrowerP.X, verifyCodeTop = 390 + webBrowerP.Y, verifyCodeRight = 242 + webBrowerP.X, verifyCodeBottom = 403 + webBrowerP.Y;
-            String price = dm.Ocr(verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom, "b@ffffff-0d0d0d", 1.0);
+            int verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom;
+            verifyCodeLeft = 155 + webBrowerP.X;
+            verifyCodeTop = 338 + webBrowerP.Y;
+            verifyCodeRight = 184 + webBrowerP.X;
+            verifyCodeBottom = 356 + webBrowerP.Y;
+            String word = dm.Ocr(verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom, "b@ffffff-0d0d0d", 1.0);
+            String price = "";
+            if (word.Equals("修改"))
+                price = dm.Ocr(modify_priceLeft, modify_priceTop, modify_priceRight, modify_priceBottom, "b@ffffff-0d0d0d", 1.0);
+            else
+                price = dm.Ocr(first_priceLeft, first_priceTop, first_priceRight, first_priceBottom, "b@ffffff-0d0d0d", 1.0);
             textBox1.Text = price;
         }
 
@@ -154,16 +188,24 @@ namespace PaipaiGG
             this.dm.SetPath("C:\\dm");
             this.dm.SetDict(0, "系统字库数字.txt");
 
-
+            first_priceLeft = 204 + webBrowerP.X;
+            first_priceTop = 390 + webBrowerP.Y;
+            first_priceRight = 242 + webBrowerP.X;
+            first_priceBottom = 403 + webBrowerP.Y;
+            modify_priceLeft = 204 + webBrowerP.X;
+            modify_priceTop = 374 + webBrowerP.Y;
+            modify_priceRight = 242 + webBrowerP.X;
+            modify_priceBottom = 387 + webBrowerP.Y;
             //把异常信息输出到文件
             //Trace.TraceError("这是一个Error级别的日志");
             //Trace.TraceWarning("这是一个Warning级别的日志");
             //Trace.TraceInformation("这是一个Info级别的日志");
             //Trace.WriteLine("这是一个普通日志");
             //Trace.Flush();//立即输出
-            TraceHelper.GetInstance().Error("This is an error message", "Main Function");
+            //TraceHelper.GetInstance().Error("This is an error message", "Main Function");
         }
-
+        
+        //本地时间显示
         private void Timer_Tick(object sender, EventArgs e)
         {
             this.label1.Text = DateTime.Now.ToString("HH:mm:ss");
@@ -270,6 +312,13 @@ namespace PaipaiGG
             //String price = dm.Ocr(verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom, "b@FFFFFF", 0.8);
             textBox1.Text = price;
 
+            verifyCodeLeft = 155 + webBrowerP.X;
+            verifyCodeTop = 338 + webBrowerP.Y;
+            verifyCodeRight = 184 + webBrowerP.X;
+            verifyCodeBottom = 356 + webBrowerP.Y;
+            String word = dm.Ocr(verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom, "b@ffffff-0d0d0d", 1.0);
+            MessageBox.Show(word);
+
             /*
             if (!Directory.Exists(" c:\\dm"))  //判断目录是否存在,不存在就创建
             {
@@ -294,5 +343,6 @@ namespace PaipaiGG
             textBox1.Text = code;
             */
         }
+
     }
 }
