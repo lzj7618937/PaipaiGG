@@ -17,6 +17,8 @@ namespace PaipaiGG
         Graphics graphics;  //创建画笔
         private int priceLeft, priceTop, priceRight, priceBottom;
         private int first_priceLeft,first_priceTop,first_priceRight,first_priceBottom,modify_priceLeft,modify_priceTop,modify_priceRight,modify_priceBottom;
+        private Thread workThread;
+        private SynchronizationContext mainThreadSynContext;
 
         public Form1()
         {
@@ -82,10 +84,16 @@ namespace PaipaiGG
             //MessageBox.Show("x3y3:" + x3 + "," + y3);
             Mouse.MouseLefDownEvent(x3, y3, 0);
 
-            Thread th2 = new Thread(copyScan);
-            th2.Start();
+            Thread.Sleep(500);
+            int x4 = 750 + webBrowerP.X;
+            int y4 = 390 + webBrowerP.Y;
+            Mouse.MouseLefDownEvent(x4, y4, 0);
+
+            mainThreadSynContext = SynchronizationContext.Current; //在这里记录主线程的上下文
+            workThread = new Thread(new ThreadStart(copyScan));
+            workThread.Start();
         }
-        
+
         //修改出价
         private void button3_Click(object sender, EventArgs e)
         {
@@ -101,11 +109,41 @@ namespace PaipaiGG
             SendKeys.Send(price);
         }
 
+        //输入验证码
+        private void inputVerifyCode(object verifyCode)
+        {
+            String code = verifyCode.ToString();
+            if (!code.Equals("cancel")) { 
+                int x1 = 750 + webBrowerP.X;
+                int y1 = 390 + webBrowerP.Y;
+                Mouse.MouseLefDownEvent(x1, y1, 0);
+                SendKeys.Send(code);
+
+                //确定按钮
+                int x2 = 600 + webBrowerP.X;
+                int y2 = 470 + webBrowerP.Y;
+                Mouse.MouseLefDownEvent(x2, y2, 0);
+
+                //确认按钮
+                Thread.Sleep(2000);
+                int x3 = 707 + webBrowerP.X;
+                int y3 = 445 + webBrowerP.Y;
+                Mouse.MouseLefDownEvent(x3, y3, 0);
+            }
+            else
+            {
+                //取消按钮
+                int x2 = 780 + webBrowerP.X;
+                int y2 = 470 + webBrowerP.Y;
+                Mouse.MouseLefDownEvent(x2, y2, 0);
+            }
+        }
+
         //拷贝验证码
         private void copyScan()
         {
             try { 
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 int verifyCodeLeft = 542 + webBrowerP.X, verifyCodeTop = 378 + webBrowerP.Y;
                 if (!Directory.Exists(" c:\\dm"))  //判断目录是否存在,不存在就创建
                 {
@@ -131,11 +169,13 @@ namespace PaipaiGG
                 VerifyCodeInput verifyCodeInput = new VerifyCodeInput(bitmap);
                 if (DialogResult.OK == verifyCodeInput.ShowDialog())
                     verifyCode = verifyCodeInput.verifyCode;
-                MessageBox.Show(verifyCode);
+                else
+                    verifyCode = "cancel";
                 bitmap.Save("c:\\dm\\" + fileName); //保存为文件  ,注意格式是否正确.
                 //不能使用Dispose，不然图片就没有了，同时也会引起异常
                 bitmap.Dispose();//关闭对象
                 graphics.Dispose();//关闭画笔
+                mainThreadSynContext.Post(new SendOrPostCallback(inputVerifyCode), verifyCode);//通知主线程
             }
             catch (Exception ex)
             {
@@ -149,9 +189,10 @@ namespace PaipaiGG
             }
         }
 
-        private void ocrCode()
+        //识别最低成交价
+        private void ocrPrice()
         {
-            this.timer2.Interval = 1000;
+            this.timer2.Interval = 500;
             this.timer2.Tick += new EventHandler(Price_Tick);
             this.timer2.Start();
         }
@@ -189,16 +230,19 @@ namespace PaipaiGG
             this.dm.SetPath("C:\\dm");
             this.dm.SetDict(0, "系统字库数字.txt");
             location();
-            ocrCode();
+            ocrPrice();
         }
 
+        //设置各个关键位置坐标
         private void location()
         {
             this.webBrowerP = webBrowser1.PointToScreen(this.webBrowser1.Location);
+            //首次出价最低成交价图片位置
             first_priceLeft = 204 + webBrowerP.X;
             first_priceTop = 390 + webBrowerP.Y;
             first_priceRight = 242 + webBrowerP.X;
             first_priceBottom = 403 + webBrowerP.Y;
+            //修改出价阶段最低成交价图片位置
             modify_priceLeft = 204 + webBrowerP.X;
             modify_priceTop = 374 + webBrowerP.Y;
             modify_priceRight = 242 + webBrowerP.X;
