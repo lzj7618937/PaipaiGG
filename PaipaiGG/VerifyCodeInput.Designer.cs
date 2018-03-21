@@ -30,10 +30,12 @@ namespace PaipaiGG
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,6 +58,7 @@ namespace PaipaiGG
             // 
             // button2
             // 
+            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button2.Location = new System.Drawing.Point(152, 171);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
@@ -98,5 +101,6 @@ namespace PaipaiGG
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Timer timer1;
     }
 }

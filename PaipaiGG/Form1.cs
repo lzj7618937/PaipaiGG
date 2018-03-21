@@ -1,11 +1,11 @@
 ﻿using dmNet;
+using PaipaiGG.Properties;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using WindowsAPI;
 
 namespace PaipaiGG
 {
@@ -13,9 +13,6 @@ namespace PaipaiGG
     {
         private Point webBrowerP;
         private dmsoft dm;
-        Bitmap bitmap;
-        Graphics graphics;  //创建画笔
-        private int priceLeft, priceTop, priceRight, priceBottom;
         private int first_priceLeft,first_priceTop,first_priceRight,first_priceBottom,modify_priceLeft,modify_priceTop,modify_priceRight,modify_priceBottom;
         private Thread workThread;
         private SynchronizationContext mainThreadSynContext;
@@ -23,7 +20,6 @@ namespace PaipaiGG
         public Form1()
         {
             InitializeComponent();
-            AutoRegCom("regsvr32 C:\\dm.dll /s");
         }
 
         //登录
@@ -89,6 +85,7 @@ namespace PaipaiGG
             int y4 = 390 + webBrowerP.Y;
             Mouse.MouseLefDownEvent(x4, y4, 0);
 
+            Thread.Sleep(500);
             mainThreadSynContext = SynchronizationContext.Current; //在这里记录主线程的上下文
             workThread = new Thread(new ThreadStart(copyScan));
             workThread.Start();
@@ -143,49 +140,48 @@ namespace PaipaiGG
         private void copyScan()
         {
             try { 
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
                 int verifyCodeLeft = 542 + webBrowerP.X, verifyCodeTop = 378 + webBrowerP.Y;
-                if (!Directory.Exists(" c:\\dm"))  //判断目录是否存在,不存在就创建
-                {
-                    DirectoryInfo directoryInfo = new DirectoryInfo(" c:\\dm");
-                    directoryInfo.Create();
-                }
-                //创建图片对象
-                int width = 111;
-                int height = 40;
-                //设置图像的大小
-                this.bitmap = new Bitmap(width, height);
-                this.graphics = Graphics.FromImage(bitmap);  //创建画笔
-                //从指定的区域中复制图形
-                graphics.CopyFromScreen(verifyCodeLeft, verifyCodeTop, 0, 0, bitmap.Size);//截屏
-                //把图形放在PictureBox中显示
-                pictureBox1.Image = bitmap;
-                string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff");//获得系统时间
-                time = System.Text.RegularExpressions.Regex.Replace(time, @"[^0-9]+", "");//提取数字
-                string fileName = time + ".bmp"; //创建文件名
-                Trace.TraceInformation(message: "首次出价验证码文件名保存为：" + fileName);
+                //if (!Directory.Exists(" c:\\dm"))  //判断目录是否存在,不存在就创建
+                //{
+                //    DirectoryInfo directoryInfo = new DirectoryInfo(" c:\\dm");
+                //    directoryInfo.Create();
+                //}
+                ////创建图片对象
+                //int width = 111;
+                //int height = 40;
+                ////设置图像的大小
+                //this.bitmap = new Bitmap(width, height);
+                //this.graphics = Graphics.FromImage(bitmap);  //创建画笔
+                ////从指定的区域中复制图形
+                //graphics.CopyFromScreen(verifyCodeLeft, verifyCodeTop, 0, 0, bitmap.Size);//截屏
+                ////把图形放在PictureBox中显示
+                //pictureBox1.Image = bitmap;
+                //string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff");//获得系统时间
+                //time = System.Text.RegularExpressions.Regex.Replace(time, @"[^0-9]+", "");//提取数字
+                //string fileName = time + ".bmp"; //创建文件名
+                //Trace.TraceInformation(message: "首次出价验证码文件名保存为：" + fileName);
                 //MessageBox.Show(fileName);
                 String verifyCode = "";
-                VerifyCodeInput verifyCodeInput = new VerifyCodeInput(bitmap);
+                VerifyCodeInput verifyCodeInput = new VerifyCodeInput(verifyCodeLeft, verifyCodeTop);
                 if (DialogResult.OK == verifyCodeInput.ShowDialog())
                     verifyCode = verifyCodeInput.verifyCode;
                 else
                     verifyCode = "cancel";
-                bitmap.Save("c:\\dm\\" + fileName); //保存为文件  ,注意格式是否正确.
-                //不能使用Dispose，不然图片就没有了，同时也会引起异常
-                bitmap.Dispose();//关闭对象
-                graphics.Dispose();//关闭画笔
+                //bitmap.Save("c:\\dm\\" + fileName); //保存为文件  ,注意格式是否正确.
+                ////不能使用Dispose，不然图片就没有了，同时也会引起异常
+                //bitmap.Dispose();//关闭对象
+                //graphics.Dispose();//关闭画笔
                 mainThreadSynContext.Post(new SendOrPostCallback(inputVerifyCode), verifyCode);//通知主线程
             }
             catch (Exception ex)
             {
                 TraceHelper.GetInstance().Error(ex, "验证码截取出错");
-                /*
-                Trace.TraceError("出现异常:" + ex.Message);//记录日志
-                Trace.TraceError("异常信息：" + ex.Message);
-                Trace.TraceError("异常对象：" + ex.Source);
-                Trace.TraceError("调用堆栈：\n" + ex.StackTrace.Trim());
-                Trace.TraceError("触发方法：" + ex.TargetSite);*/
+                //Trace.TraceError("出现异常:" + ex.Message);//记录日志
+                //Trace.TraceError("异常信息：" + ex.Message);
+                //Trace.TraceError("异常对象：" + ex.Source);
+                //Trace.TraceError("调用堆栈：\n" + ex.StackTrace.Trim());
+                //Trace.TraceError("触发方法：" + ex.TargetSite);
             }
         }
 
@@ -200,35 +196,56 @@ namespace PaipaiGG
         //最低成效价显示
         private void Price_Tick(object sender, EventArgs e)
         {
-            int verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom;
-            verifyCodeLeft = 155 + webBrowerP.X;
-            verifyCodeTop = 338 + webBrowerP.Y;
-            verifyCodeRight = 184 + webBrowerP.X;
-            verifyCodeBottom = 356 + webBrowerP.Y;
-            String word = dm.Ocr(verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom, "b@ffffff-0d0d0d", 1.0);
-            String price = "";
-            if (word.Equals("修改"))
-            {
-                label3.Text = "修改最低价：";
-                price = dm.Ocr(modify_priceLeft, modify_priceTop, modify_priceRight, modify_priceBottom, "b@ffffff-0d0d0d", 1.0);
-            }
-            else
-            {
-                label3.Text = "首次最低价：";
-                price = dm.Ocr(first_priceLeft, first_priceTop, first_priceRight, first_priceBottom, "b@ffffff-0d0d0d", 1.0);
-            }
+            if (this.webBrowerP.X > 0 && this.webBrowerP.Y > 0) { 
+                int verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom;
+                verifyCodeLeft = 155 + webBrowerP.X;
+                verifyCodeTop = 338 + webBrowerP.Y;
+                verifyCodeRight = 184 + webBrowerP.X;
+                verifyCodeBottom = 356 + webBrowerP.Y;
+                String word = dm.Ocr(verifyCodeLeft, verifyCodeTop, verifyCodeRight, verifyCodeBottom, "b@ffffff-0d0d0d", 1.0);
+                String price = "";
+                if (word.Equals("修改"))
+                {
+                    label3.Text = "修改最低价：";
+                    price = dm.Ocr(modify_priceLeft, modify_priceTop, modify_priceRight, modify_priceBottom, "b@ffffff-0d0d0d", 1.0);
+                }
+                else
+                {
+                    label3.Text = "首次最低价：";
+                    price = dm.Ocr(first_priceLeft, first_priceTop, first_priceRight, first_priceBottom, "b@ffffff-0d0d0d", 1.0);
+                }
                 textBox1.Text = price;
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {           
+        {
+            //设置当前路径
+            Trace.TraceInformation(message: "程序当前运行路径：" + Application.StartupPath);
+            byte[] resDmNet = Resources.dmNet;
+            FileStream fsDmNet = new FileStream(Application.StartupPath + "\\dmNet.dll", FileMode.Create, FileAccess.Write);
+            fsDmNet.Write(resDmNet, 0, resDmNet.Length);
+            fsDmNet.Close();
+
+            byte[] resDm = Resources.dm;
+            FileStream fsDm = new FileStream(Application.StartupPath + "\\dm.dll", FileMode.Create, FileAccess.Write);
+            fsDm.Write(resDm, 0, resDm.Length);
+            fsDm.Close();
+
+            String resOcrChar = Resources.ocrChar;
+            StreamWriter fsOcrChar = new StreamWriter(Application.StartupPath + "\\ocrChar.txt", false);
+            fsOcrChar.Write(resOcrChar, 0, resOcrChar.Length);
+            fsOcrChar.Close();
+
             this.timer1.Interval = 1000;
             this.timer1.Tick += new EventHandler(Timer_Tick);
             this.timer1.Start();
             this.webBrowser1.Url = new Uri("http://test.alltobid.com/moni/gerenlogin.html");
+
+            AutoRegCom("regsvr32 " + Application.StartupPath + "\\dm.dll /s");
             this.dm = new dmsoft();
-            this.dm.SetPath("C:\\dm");
-            this.dm.SetDict(0, "系统字库数字.txt");
+            this.dm.SetPath(Application.StartupPath);
+            this.dm.SetDict(0, "ocrChar.txt");
             location();
             ocrPrice();
         }
@@ -270,7 +287,6 @@ namespace PaipaiGG
         //注册大漠插件register dm.dll
         static string AutoRegCom(string strCmd)
         {
-            strCmd = "regsvr32 D:\\dm.dll /s";
             string rInfo;
             try
             {

@@ -70,6 +70,26 @@ namespace PaipaiGG.Properties {
         }
         
         /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        public static byte[] dm {
+            get {
+                object obj = ResourceManager.GetObject("dm", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        public static byte[] dmNet {
+            get {
+                object obj = ResourceManager.GetObject("dmNet", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 3F0812014024087E0$0$0.0.20$10
         ///40480BFF002004$1$0.0.16$10
         ///60D02A0946270C$2$0.0.19$10
@@ -85,9 +105,9 @@ namespace PaipaiGG.Properties {
         ///2004029FB2A2D46A89512A254CAA9F9002000000020331800008060F0020C4E083100280600$首次$0.0.102$14
         /// 的本地化字符串。
         /// </summary>
-        public static string 系统字库数字 {
+        public static string ocrChar {
             get {
-                return ResourceManager.GetString("系统字库数字", resourceCulture);
+                return ResourceManager.GetString("ocrChar", resourceCulture);
             }
         }
     }

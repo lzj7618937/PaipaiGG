@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.IO;
-using System.Diagnostics;
 using System.Management;
 using System.Net;
 using System.Collections.Generic;
@@ -10,73 +9,6 @@ using System.Text;
 
 namespace WindowsAPI
 {
-    public class TraceHelper
-    {
-        private static TraceHelper _traceHelper;
-
-        private TraceHelper()
-        {
-        }
-
-        public static TraceHelper GetInstance()
-        {
-            if (_traceHelper == null)
-                _traceHelper = new TraceHelper();
-
-            return _traceHelper;
-        }
-
-        public void Error(string message, string module)
-        {
-            Log(message, MessageType.Error, module);
-        }
-
-        public void Error(Exception ex, string module)
-        {
-            Log(ex.StackTrace, MessageType.Error, module);
-        }
-
-        public void Warning(string message, string module)
-        {
-            Log(message, MessageType.Warning, module);
-        }
-
-        public void Info(string message, string module)
-        {
-            Log(message, MessageType.Information, module);
-        }
-
-        private void Log(string message, MessageType type, string module)
-        {
-            Trace.WriteLine(
-                string.Format("{0},{1},{2},{3}",
-                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                type.ToString(),
-                module,
-                message));
-        }
-    }
-
-    public enum MessageType
-    {
-        Information = 0,
-        Warning = 1,
-        Error = 2
-    }
-
-    class MyTraceListener : TraceListener
-    {
-        public override void Write(string message)
-        {
-            File.AppendAllText("c:\\dm\\1.log", message);
-        }
-
-        public override void WriteLine(string message)
-        {
-            File.AppendAllText("c:\\dm\\1.log", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss    ") + message + Environment.NewLine);
-        }
-    }
-
     /// 获取本机用户名、MAC地址、内网IP地址、公网IP地址、硬盘ID、CPU序列号、系统名称、物理内存。
     /// </summary>
     public class GetSystemInfo
